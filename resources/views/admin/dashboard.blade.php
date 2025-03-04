@@ -1,4 +1,4 @@
-@extends('admin.layout.master')
+@extends('admin.layout.master',['page_slug' => 'dashboard'])
 
 @section('content')
 <div class="container mt-5">
