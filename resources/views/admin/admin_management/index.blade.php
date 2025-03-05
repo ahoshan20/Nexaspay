@@ -1,7 +1,6 @@
 @extends('admin.layout.master', ['page_slug' => "admin"])
 
 @section('content')
-<div class="container-fluid p-0">
 <div class="row">
 	<div class="col-12">
 		<div class="card">
@@ -17,7 +16,7 @@
 							<th>{{__('SL')}}</th>
 							<th>{{__('Name')}}</th>
 							<th>{{__('Email')}}</th>
-							<!-- <th>{{__('Status')}}</th> -->
+							<th>{{__('Status')}}</th>
 							<th>{{__('Created At')}}</th>
 							<th>{{__('Created_by')}}</th>
 							<th>{{__('Active')}}</th>
@@ -29,6 +28,7 @@
 								<td>{{$loop->iteration}}</td>
 								<td>{{$admin->name}}</td>
 								<td>{{$admin->email}}</td>
+								<td><span class="{{$admin->getStatusClass()}}">{{$admin->getStatus()}}</span></td>
 								<td>{{date('d, M, Y', strtotime($admin->created_at))}}</td>
 								<td>{{$admin->creater ? $admin->creater->name : 'System'}}</td>
 								<td>
@@ -46,8 +46,14 @@
 													class="dropdown-item">Edit</a>
 											</li>
 											<li>
+												<a href="{{route('admin.status', encrypt($admin->id))}}"
+													class="dropdown-item">
+													<span>{{$admin->getStatusTitle()}}</span>
+												</a>
+											</li>
+											<li>
 												<a href="javascript:void(0)" class="dropdown-item"
-													onclick='document.getElementById("delete_form{{$loop->iteration}}").submit()'>Delete</a>
+													onclick='confirmationAlert(()=> document.getElementById("delete_form{{$loop->iteration}}").submit())'>Delete</a>
 
 												<form id="delete_form{{$loop->iteration}}"
 													action="{{route('admin.destroy', encrypt($admin->id))}}" method="POST"
@@ -66,6 +72,5 @@
 			</div>
 		</div>
 	</div>
-</div>
 </div>
 @endsection

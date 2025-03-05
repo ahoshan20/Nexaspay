@@ -15,18 +15,19 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'status',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -44,5 +45,44 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function creater()
+    {
+        return $this->belongsTo(user::class, 'created_by', 'id');
+    }
+    public function updater()
+    {
+        return $this->belongsTo(user::class, 'updated_by', 'id');
+    }
+    public function deleter()
+    {
+        return $this->belongsTo(user::class, 'deleted_by', 'id');
+    }
+    public function getStatus()
+    {
+        switch ($this->status) {
+            case '1':
+                return 'Active';
+            case '0':
+                return 'Deactive';
+        }
+    }
+    public function getStatusClass()
+    {
+        switch ($this->status) {
+            case '1':
+                return 'badge bg-success';
+            case '0':
+                return 'badge bg-danger';
+        }
+    }
+    public function getStatusTitle()
+    {
+        switch ($this->status) {
+            case '1':
+                return 'Deactive';
+            case '0':
+                return 'Active';
+        }
     }
 }

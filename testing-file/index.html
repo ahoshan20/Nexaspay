@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --sidebar-bg: #0f1723;
+            --sidebar-width: 240px;
+            --primary-color: #ffc107;
+            --success-color: #4cd964;
+            --warning-color: #ff9500;
+            --danger-color: #ff3b30;
+            --info-color: #5ac8fa;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+        }
+        
+        .logo-container {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link.active {
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .user-profile {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #6c5ce7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .action-button {
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .action-button:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .primary-button {
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+        }
+        
+        .summary-card {
+            background-color: #0f1723;
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .alert-notification {
+            background-color: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .currency-calculator {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .payment-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: rgba(255, 149, 0, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .status-received {
+            background-color: rgba(76, 217, 100, 0.1);
+            color: var(--success-color);
+        }
+        
+        .status-settled {
+            background-color: rgba(76, 217, 100, 0.1);
+            color: var(--success-color);
+        }
+        
+        .status-completed {
+            background-color: rgba(76, 217, 100, 0.1);
+            color: var(--success-color);
+        }
+        
+        .status-expired {
+            background-color: rgba(255, 149, 0, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .status-cancelled {
+            background-color: rgba(255, 59, 48, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .status-failed {
+            background-color: rgba(255, 59, 48, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .flag-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .promo-banner {
+            background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8&w=1000&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            border-radius: 10px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .promo-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .promo-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .dropdown-toggle::after {
+            display: none;
+        }
+        
+        .table th {
+            font-weight: 500;
+            color: #6c757d;
+            font-size: 13px;
+        }
+        
+        .upgrade-btn {
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            font-weight: 500;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .logout-btn {
+            background-color: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: none;
+            font-size: 14px;
+            padding: 5px 0;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .logout-btn:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column">
+        <div class="logo-container">
+            <h2 class="mb-0 fw-bold">N</h2>
+            <div class="text-white">nexapay</div>
+            <div class="text-white-50 small">pay like a local</div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="#" class="nav-link active">
+                <i class="bi bi-grid"></i>
+                Dashboard
+            </a>
+            <a href="#" class="nav-link">
+                <i class="bi bi-clock-history"></i>
+                Payment History
+            </a>
+            <a href="#" class="nav-link">
+                <i class="bi bi-download"></i>
+                Receive Payment
+            </a>
+            <a href="#" class="nav-link">
+                <i class="bi bi-send"></i>
+                Make Payment
+            </a>
+            <a href="#" class="nav-link">
+                <i class="bi bi-person-lines-fill"></i>
+                Contacts
+            </a>
+            <a href="#" class="nav-link">
+                <i class="bi bi-gear"></i>
+                Account Settings
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+        </div>
+        
+        <div class="user-profile mt-auto">
+            <div class="d-flex align-items-center mb-3">
+                <div class="avatar me-3">A</div>
+                <div>
+                    <div class="fw-bold">Alex Round</div>
+                    <div class="text-white-50 small">Activation Pending</div>
+                </div>
+            </div>
+            <button class="upgrade-btn w-100 mb-2">Upgrade</button>
+            <button class="logout-btn">Log out</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0">Hello, Alex Round!</h4>
+            <div class="d-flex align-items-center">
+                <div class="dropdown me-3">
+                    <button class="btn btn-sm btn-light dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                        <span class="flag-icon me-2">🇺🇸</span> Eng
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><span class="flag-icon me-2">🇺🇸</span> English</a></li>
+                        <li><a class="dropdown-item" href="#"><span class="flag-icon me-2">🇨🇳</span> Chinese</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <button class="primary-button action-button w-100">
+                    <i class="bi bi-plus-circle"></i>
+                    Collect payment
+                </button>
+            </div>
+            <div class="col-md-3">
+                <button class="action-button w-100">
+                    <i class="bi bi-send"></i>
+                    Make payment
+                </button>
+            </div>
+            <div class="col-md-3">
+                <button class="action-button w-100">
+                    <i class="bi bi-info-circle"></i>
+                    Quick Tour
+                </button>
+            </div>
+            <div class="col-md-3">
+                <button class="action-button w-100">
+                    <i class="bi bi-person-plus"></i>
+                    Add payee
+                </button>
+            </div>
+        </div>
+        
+        <div class="alert-notification mb-4 d-flex align-items-center">
+            <i class="bi bi-clock-history me-2"></i>
+            <div>The enterprise certification review is under way, please wait patiently</div>
+            <button class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Summary</h5>
+            <div class="text-muted">Last 30 days</div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <h3 class="mb-1">129.00</h3>
+                    <div class="text-white-50">Total amount collected USD</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <h3 class="mb-1">326.00</h3>
+                    <div class="text-white-50">Total pending amount USD</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <h3 class="mb-1">28.00</h3>
+                    <div class="text-white-50">Total pending payment link</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-0">
+                        <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#">Payments</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Payment History</a>
+                                </li>
+                            </ul>
+                            <div>
+                                <span class="me-2 text-muted">Recent 10 records</span>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-secondary">All payments</button>
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                                        More
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Payer Name
+                                            <i class="bi bi-arrow-down-up text-muted ms-1"></i>
+                                        </th>
+                                        <th>
+                                            Amount
+                                            <i class="bi bi-arrow-down-up text-muted ms-1"></i>
+                                        </th>
+                                        <th>
+                                            Payment Method
+                                            <i class="bi bi-arrow-down-up text-muted ms-1"></i>
+                                        </th>
+                                        <th>
+                                            Invoice Number
+                                            <i class="bi bi-arrow-down-up text-muted ms-1"></i>
+                                        </th>
+                                        <th>
+                                            Due Date
+                                            <i class="bi bi-arrow-down-up text-muted ms-1"></i>
+                                        </th>
+                                        <th>
+                                            Creation Date
+                                            <i class="bi bi-arrow-down-up text-muted ms-1"></i>
+                                        </th>
+                                        <th>
+                                            Notes
+                                            <i class="bi bi-arrow-down-up text-muted ms-1"></i>
+                                        </th>
+                                        <th>
+                                            Payment Status
+                                            <i class="bi bi-arrow-down-up text-muted ms-1"></i>
+                                        </th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="flag-icon me-2">🇨🇳</span>
+                                                <span>Huaxia Wholesale</span>
+                                            </div>
+                                        </td>
+                                        <td>$15,000.00</td>
+                                        <td>Bank Transfer</td>
+                                        <td>INV-000123</td>
+                                        <td>2024/8/15 0:00</td>
+                                        <td>2024/7/15 0:00</td>
+                                        <td>Prepayment</td>
+                                        <td><span class="payment-status status-pending">Pending Payment</span></td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <button class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-eye"></i></button>
+                                                <button class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-pencil"></i></button>
+                                                <button class="btn btn-sm btn-link p-0"><i class="bi bi-three-dots"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="flag-icon me-2">🇧🇷</span>
+                                                <span>AdvaTech Solutions</span>
+                                            </div>
+                                        </td>
+                                        <td>$8,500.00</td>
+                                        <td>Bank Transfer</td>
+                                        <td>INV-000123</td>
+                                        <td>2024/8/15 0:00</td>
+                                        <td>2024/7/15 0:00</td>
+                                        <td>Final payment</td>
+                                        <td><span class="payment-status status-received">Payment Received</span></td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <button class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-eye"></i></button>
+                                                <button class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-pencil"></i></button>
+                                                <button class="btn btn-sm btn-link p-0"><i class="bi bi-three-dots"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="flag-icon me-2">🇧🇷</span>
+                                                <span>AdvaTech Solutions</span>
+                                            </div>
+                                        </td>
+                                        <td>$8,500.00</td>
+                                        <td>Bank Transfer</td>
+                                        <td>INV-000123</td>
+                                        <td>2024/8/15 0:00</td>
+                                        <td>2024/7/15 0:00</td>
+                                        <td>Final payment</td>
+                                        <td><span class="payment-status status-settled">Funds Settled</span></td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <button class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-eye"></i></button>
+                                                <button class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-pencil"></i></button>
+                                                <button class="btn btn-sm btn-link p-0"><i class="bi bi-three-dots"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="flag-icon me-2">🇨🇳</span>
+                                                <span>Zhongsen Electronics</span>
+                                            </div>
+                                        </td>
+                                        <td>$15,000.00</td>
+                                        <td>Bank Transfer</td>
+                                        <td>INV-000123</td>
+                                        <td>2024/8/15 0:00</td>
+                                        <td>2024/7/15 0:00</td>
+                                        <td>Final payment</td>
+                                        <td><span class="payment-status status-completed">Refund Completed</span></td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <button class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-eye"></i></button>
+                                                <button class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-pencil"></i></button>
+                                                <button class="btn btn-sm btn-link p-0"><i class="bi bi-three-dots"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="flag-icon me-2">🇧🇷</span>
+                                                <span>AdvaTech Solutions</span>
+                                            </div>
+                                        </td>
+                                        <td>$8,500.00</td>
+                                        <td>Bank Transfer</td>
+                                        <td>INV-000123</td>
+                                        <td>2024/8/15 0:00</td>
+                                        <td>2024/7/15 0:00</td>
+                                        <td>Prepayment</td>
+                                        <td><span class="payment-status status-expired">Expired</span></td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <button class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-eye"></i></button>
+                                                <button class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-pencil"></i></button>
+                                                <button class="btn btn-sm btn-link p-0"><i class="bi bi-three-dots"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="promo-banner">
+                    <div class="promo-content text-center">
+                        <h4 class="mb-2">Grow with us:</h4>
+                        <p class="mb-0">new opportunities for your business</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="currency-calculator mb-4">
+                    <h5 class="mb-3">Currency Calculator</h5>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Amount you collect</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="1000">
+                            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button">
+                                <span class="flag-icon me-2">🇨🇳</span> CNY
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <div>1 CNY = 1 USD</div>
+                            <div>Nexapay Rate</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <div>4.83 CNY</div>
+                            <div>Crossborder settlement fee</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <div>998.35 CNY</div>
+                            <div>Total amount you will receive</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Amount paid by payer</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="1000">
+                            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button">
+                                <span class="flag-icon me-2">🇺🇸</span> USD
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <div>You paid rate up to 25.08 CNY</div>
+                            <div>to the average bank</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <div>Should arrive by Thursday</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section>
+        <div class="sidebar d-flex flex-column">
+            <div class="logo-container">
+                <h2 class="mb-0 fw-bold">N</h2>
+                <div class="text-white">nexapay</div>
+                <div class="text-white-50 small">pay like a local</div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="{{ route('dashboard') }}" class="nav-link {{ $active == 'dashboard' ? 'active' : '' }}">
+                    <i class="bi bi-grid"></i>
+                    Dashboard
+                </a>
+                <a href="{{ route('payment.history') }}" class="nav-link {{ $active == 'payment-history' ? 'active' : '' }}">
+                    <i class="bi bi-clock-history"></i>
+                    Payment History
+                </a>
+                <a href="{{ route('receive.payment') }}" class="nav-link {{ $active == 'receive-payment' ? 'active' : '' }}">
+                    <i class="bi bi-download"></i>
+                    Receive Payment
+                </a>
+                <a href="{{ route('make.payment') }}" class="nav-link {{ $active == 'make-payment' ? 'active' : '' }}">
+                    <i class="bi bi-send"></i>
+                    Make Payment
+                </a>
+                <a href="{{ route('contacts') }}" class="nav-link {{ $active == 'contacts' ? 'active' : '' }}">
+                    <i class="bi bi-person-lines-fill"></i>
+                    Contacts
+                </a>
+                <a href="{{ route('account.settings') }}" class="nav-link {{ $active == 'account-settings' ? 'active' : '' }}">
+                    <i class="bi bi-gear"></i>
+                    Account Settings
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+            </div>
+            
+            <div class="user-profile mt-auto">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar me-3">A</div>
+                    <div>
+                        <div class="fw-bold">Alex Round</div>
+                        <div class="text-white-50 small">Activation Pending</div>
+                    </div>
+                </div>
+                <button class="upgrade-btn w-100 mb-2">Upgrade</button>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="logout-btn">Log out</button>
+                </form>
+            </div>
+        </div>
+        
+        
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

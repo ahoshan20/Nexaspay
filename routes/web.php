@@ -18,6 +18,7 @@ function () {
     //Admin Management Routes
     Route::resource('/admin', AdminController::class);
 
-
+    // Admin status Route
+    Route::get('/admin/status/{id}',[AdminController::class,'status'])->name('admin.status');
 });
 
